@@ -3,7 +3,7 @@
 **Organization:** THL (Simulated)  
 **Environment:** Microsoft Entra ID Lab Tenant  
 **Assessment Type:** Identity Configuration and Access Review  
-**Status:** In Progress (Step 3C Completed)
+**Status:** In Progress
 
 ## 1. Environment Overview
 
@@ -52,7 +52,7 @@
 - Six accounts are enabled.
 - One account, Victor Wemby (test identity), is disabled.
 
-**Security Assessment:** The disabled identity requires further examination to determine whether unnecessary group memberships or privileged assignments remain. The disabled status alone does not constitute a security finding.
+**Security Assessment:** One disabled identity was identified for further access review. Subsequent testing confirmed retained group memberships and a group-based enterprise application assignment, documented in Section 4.
 
 **Evidence:** [Account Status Analysis](../Images/account-status.png)
 
@@ -67,7 +67,7 @@
 - Direct group memberships: 2
 - Groups: Contractors, All Company (Dynamic)
 
-**Security Assessment:** The disabled identity retains two group memberships. Further investigation is required to determine whether the memberships confer application access or conflict with offboarding requirements. The dynamic group's membership rule has not yet been reviewed.
+**Security Assessment:** The disabled identity retains membership in two security groups. Subsequent testing confirmed that Contractors grants a group-based enterprise application assignment, while All Company (Dynamic) uses an all-users membership rule. The business justification for retaining these assignments remains unverified.
 
 **Evidence:** [Disabled Account Memberships](../Images/disabled-account-memberships.png)
 
@@ -83,7 +83,7 @@
 - Group owners: 0
 - Nested group memberships: 0
 
-**Security Assessment:** Confirmed that a disabled account retains assigned security group membership. Application access impact and offboarding requirements remain unverified.
+**Security Assessment:** Confirmed that the disabled identity retains membership in an assigned security group. Subsequent testing identified an enterprise application assignment associated with this group. Offboarding requirements remain unverified.
 
 **Evidence:** 
 - [Contractors Group Overview](../Images/contractors-group-overview.png)
@@ -105,6 +105,34 @@
 
 **Evidence:** [Contractor Portal Application Assignment](../Images/contractors-app-assignment.png)
 
+### Dynamic Group Membership Rule Review
+
+**Objective:** Determine why a disabled identity remains in the All Company (Dynamic) security group.
+
+**Methodology:** Retrieved the group's membership rule and processing state using Microsoft Graph PowerShell (`Get-MgGroup`).
+
+**Results:**
+- Group: All Company (Dynamic)
+- Membership type: Dynamic User
+- Membership rule: `user.objectId -ne null`
+- Rule processing state: On
+- Disabled account included: Victor Wemby
+
+**Security Assessment:** The rule includes all users with an object ID, regardless of account status or user classification. Victor's membership is consistent with the configured rule. The security impact depends on the group's resource assignments and intended access requirements.
+
+**Evidence:** [Dynamic Group Membership Rule](../Images/dynamic-group-rule.png)
+
+### Dynamic Group Application Assignment Review
+
+**Methodology:** Reviewed the Applications section of the All Company (Dynamic) security group in Microsoft Entra ID.
+
+**Results:**
+- Enterprise application assignments found: 0
+- Membership rule: `user.objectId -ne null`
+- Disabled account included: Victor Wemby
+
+**Security Assessment:** No enterprise application assignments were identified for the dynamic group. Its membership rule includes disabled identities, but no application access impact was established during this review. Permissions to other resource types have not been assessed.
+
 ## 5. Preliminary Findings and Follow-Up
 
 | ID | Observation | Status |
@@ -118,5 +146,39 @@ No confirmed security vulnerabilities have been established.
 - Assessment performed against a simulated tenant containing seven user accounts.
 - Business authorization requirements and offboarding history have not been verified.
 - Group membership does not independently prove effective application access.
-- Transitive memberships and privileged role assignments have not yet been reviewed.
-- No identity configurations were modified during testing.
+- Transitive group memberships and tenant-wide privileged role assignments have not been comprehensively assessed.
+- Identity inventory and access investigations were performed using read-only queries.
+
+## 7. Group Inventory
+
+**Objective:** Inventory Microsoft Entra ID groups and identify their membership configurations.
+
+**Methodology:** Queried group objects using Microsoft Graph PowerShell (`Get-MgGroup`) and reviewed group types, security enablement, and mail enablement.
+
+**Results:**
+- Total groups: 9
+- Assigned security groups: 5
+- Dynamic security groups: 1
+- Microsoft 365 groups: 3
+
+**Security Assessment:** Group inventory completed successfully. No security misconfigurations were confirmed from group attributes alone. Further membership and access assignment analysis is required.
+
+**Evidence:** [Group Inventory](../Images/group-inventory.png)
+
+## 8. Group Membership Inventory
+
+**Objective:** Enumerate direct user memberships across Microsoft Entra ID groups.
+
+**Methodology:** Automated direct user membership enumeration across nine groups using `Get-MgGroupMemberAsUser` and a PowerShell `foreach` loop. Exported the results to CSV for further analysis.
+
+**Results:**
+- Groups reviewed: 9
+- Direct group-user membership records: 20
+- Groups with direct user members: 7
+- Largest group: All Company (Dynamic), 7 users
+- Groups with no direct user members: Sales, Viva Engage group
+- Disabled identity Victor Wemby remains a member of Contractors and All Company (Dynamic).
+
+**Security Assessment:** Group memberships were successfully inventoried. No new confirmed security vulnerabilities were identified. The retained Contractors application assignment remains under investigation as OBS-001.
+
+**Script:** [Get-GroupMemberships.ps1](../Scripts/Get-GroupMemberships.ps1)
