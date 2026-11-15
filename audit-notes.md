@@ -18,9 +18,9 @@
 | Authentication | Delegated OAuth 2.0 |
 
 **Evidence:** 
-- [Tenant Information](../Images/tenant-info.png)
-- [Microsoft Graph Modules](../Images/graph-modules.png)
-- [Microsoft Graph Authentication](../Images/graph-auth.png)
+- [Tenant Information](Images/tenant-info.png)
+- [Microsoft Graph Modules](Images/graph-modules.png)
+- [Microsoft Graph Authentication](Images/graph-auth.png)
 
 ## 2. User Inventory
 
@@ -40,7 +40,7 @@
 
 **Observation:** All seven accounts were classified as Members. One account was identified as disabled.
 
-**Evidence:** [User Inventory](../Images/user-inventory.png)
+**Evidence:** [User Inventory](Images/user-inventory.png)
 
 ## 3. Account Status Analysis
 
@@ -54,7 +54,7 @@
 
 **Security Assessment:** One disabled identity was identified for further access review. Subsequent testing confirmed retained group memberships and a group-based enterprise application assignment, documented in Section 4.
 
-**Evidence:** [Account Status Analysis](../Images/account-status.png)
+**Evidence:** [Account Status Analysis](Images/account-status.png)
 
 ## 4. Disabled Account Membership Review
 
@@ -69,7 +69,7 @@
 
 **Security Assessment:** The disabled identity retains membership in two security groups. Subsequent testing confirmed that Contractors grants a group-based enterprise application assignment, while All Company (Dynamic) uses an all-users membership rule. The business justification for retaining these assignments remains unverified.
 
-**Evidence:** [Disabled Account Memberships](../Images/disabled-account-memberships.png)
+**Evidence:** [Disabled Account Memberships](Images/disabled-account-memberships.png)
 
 ### Contractors Group Verification
 
@@ -86,8 +86,8 @@
 **Security Assessment:** Confirmed that the disabled identity retains membership in an assigned security group. Subsequent testing identified an enterprise application assignment associated with this group. Offboarding requirements remain unverified.
 
 **Evidence:** 
-- [Contractors Group Overview](../Images/contractors-group-overview.png)
-- [Contractors Group Members](../Images/contractors-group-members.png)
+- [Contractors Group Overview](Images/contractors-group-overview.png)
+- [Contractors Group Members](Images/contractors-group-members.png)
 
 ### Enterprise Application Assignment Review
 
@@ -103,7 +103,7 @@
 
 **Security Assessment:** Confirmed that a disabled identity retains group-based application assignment. Current access is not established because the account is disabled. Reactivation may restore authorization without an additional group membership review.
 
-**Evidence:** [Contractor Portal Application Assignment](../Images/contractors-app-assignment.png)
+**Evidence:** [Contractor Portal Application Assignment](Images/contractors-app-assignment.png)
 
 ### Dynamic Group Membership Rule Review
 
@@ -120,7 +120,7 @@
 
 **Security Assessment:** The rule includes all users with an object ID, regardless of account status or user classification. Victor's membership is consistent with the configured rule. The security impact depends on the group's resource assignments and intended access requirements.
 
-**Evidence:** [Dynamic Group Membership Rule](../Images/dynamic-group-rule.png)
+**Evidence:** [Dynamic Group Membership Rule](Images/dynamic-group-rule.png)
 
 ### Dynamic Group Application Assignment Review
 
@@ -163,7 +163,7 @@ No confirmed security vulnerabilities have been established.
 
 **Security Assessment:** Group inventory completed successfully. No security misconfigurations were confirmed from group attributes alone. Further membership and access assignment analysis is required.
 
-**Evidence:** [Group Inventory](../Images/group-inventory.png)
+**Evidence:** [Group Inventory](Images/group-inventory.png)
 
 ## 8. Group Membership Inventory
 
@@ -181,4 +181,4 @@ No confirmed security vulnerabilities have been established.
 
 **Security Assessment:** Group memberships were successfully inventoried. No new confirmed security vulnerabilities were identified. The retained Contractors application assignment remains under investigation as OBS-001.
 
-**Script:** [Get-GroupMemberships.ps1](../Scripts/Get-GroupMemberships.ps1)
+**Script:** [Get-GroupMemberships.ps1](Scripts/Get-GroupMemberships.ps1)
